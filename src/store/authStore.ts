@@ -5,6 +5,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  role: 'user' | 'admin';
 }
 
 interface AuthStore {
@@ -35,6 +36,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         error: error.response?.data?.error || 'Une erreur est survenue',
         loading: false,
       });
+      throw error;
     }
   },
 
@@ -49,6 +51,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         error: error.response?.data?.error || 'Une erreur est survenue',
         loading: false,
       });
+      throw error;
     }
   },
 
