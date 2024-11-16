@@ -23,11 +23,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error);
+    
     if (error.response) {
       const message = error.response.data?.error || 'Une erreur est survenue';
       toast.error(message);
       
-      if (error.response.status === 401) {
+      if (error.response.status === 401 || error.response.status === 403) {
         localStorage.removeItem('token');
         window.location.href = '/login';
       }
@@ -47,6 +49,15 @@ export const auth = {
   login: (data: { email: string; password: string }) =>
     api.post('/auth/login', data),
   me: () => api.get('/auth/me'),
+};
+
+export const admin = {
+  getStats: () => api.get('/admin/stats'),
+  getOrders: () => api.get('/admin/orders'),
+  getCustomers: () => api.get('/admin/customers'),
+  updateStock: (productId: string, stock: number) =>
+    api.patch(`/admin/products/${productId}/stock`, { stock }),
+  getStockAlerts: () => api.get('/admin/stock-alerts'),
 };
 
 export const products = {

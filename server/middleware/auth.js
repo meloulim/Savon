@@ -6,14 +6,14 @@ export const auth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      throw new Error();
+      throw new Error('Token manquant');
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.id });
 
     if (!user) {
-      throw new Error();
+      throw new Error('Utilisateur non trouvé');
     }
 
     req.user = user;
@@ -25,12 +25,21 @@ export const auth = async (req, res, next) => {
 
 export const adminAuth = async (req, res, next) => {
   try {
-    await auth(req, res, () => {
-      if (req.user.role !== 'admin') {
-        throw new Error();
-      }
-      next();
-    });
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      throw new Error('Token manquant');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id: decoded.id });
+
+    if (!user || user.role !== 'admin') {
+      throw new Error('Accès non autorisé');
+    }
+
+    req.user = user;
+    next();
   } catch (error) {
     res.status(403).json({ error: 'Accès non autorisé.' });
   }
