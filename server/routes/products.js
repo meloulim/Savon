@@ -1,6 +1,7 @@
 import express from 'express';
 import Product from '../models/Product.js';
 import { adminAuth, auth } from '../middleware/auth.js';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -115,4 +116,4 @@ router.post('/reduce-stock', auth, async (req, res) => {
   }
 });
 
-export default router;
+export { router as default };

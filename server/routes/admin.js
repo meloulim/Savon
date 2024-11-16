@@ -107,4 +107,4 @@ router.get('/stock-alerts', adminAuth, async (req, res) => {
   }
 });
 
-export default router;
+export { router as default };

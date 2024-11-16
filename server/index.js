@@ -13,7 +13,7 @@ const app = express();
 
 // Configuration CORS plus permissive pour le développement
 app.use(cors({
-  origin: true, // Permet toutes les origines en développement
+  origin: process.env.FRONTEND_URL || true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
