@@ -2,15 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
 import adminRoutes from './routes/admin.js';
 
 dotenv.config();
-
-const app = express();
 
 // Vérification des variables d'environnement requises
 const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET', 'FRONTEND_URL'];
@@ -20,6 +17,8 @@ for (const envVar of requiredEnvVars) {
     process.exit(1);
   }
 }
+
+const app = express();
 
 // Configuration CORS
 app.use(cors({
@@ -46,11 +45,11 @@ app.get('/', (req, res) => {
   });
 });
 
+// Connect to MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;
 console.log('🔄 Tentative de connexion à MongoDB...');
 console.log('MongoDB URI définie:', !!MONGODB_URI);
 
-// Connect to MongoDB
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('✅ Connecté à MongoDB Atlas');
