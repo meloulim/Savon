@@ -9,9 +9,9 @@ services:
         value: mongodb+srv://meloulim:FOne5nKCrWURARsa@savon.8nq0q.mongodb.net/savon?retryWrites=true&w=majority
       - key: JWT_SECRET
         value: savonnerie_jwt_secret_2024
-      - key: STRIPE_SECRET_KEY
-        sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
       - key: FRONTEND_URL
-        value: https://la-savonnerie-montmartre.netlify.app
+        value: https://bucolic-mooncake-a9a162.netlify.app
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
