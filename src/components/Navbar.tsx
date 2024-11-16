@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingCart, Search, User, ChevronDown, History } from 'lucide-react';
+import { Menu, X, ShoppingCart, Search, User, ChevronDown, History, Settings } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { Link, useNavigate } from 'react-router-dom';
@@ -114,6 +114,17 @@ export default function Navbar() {
                       <p className="px-4 py-2 text-sm text-gray-700 border-b">
                         {user.name}
                       </p>
+                      {user.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600"
+                        >
+                          <div className="flex items-center">
+                            <Settings className="h-4 w-4 mr-2" />
+                            Administration
+                          </div>
+                        </Link>
+                      )}
                       <button
                         onClick={() => useAuthStore.getState().logout()}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600"
@@ -202,6 +213,16 @@ export default function Navbar() {
                   <History className="h-5 w-5 mr-2" />
                   Mes commandes
                 </Link>
+                {user.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center text-gray-600 hover:text-primary-600"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Settings className="h-5 w-5 mr-2" />
+                    Administration
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     useAuthStore.getState().logout();

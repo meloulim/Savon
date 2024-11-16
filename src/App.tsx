@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
@@ -10,6 +10,19 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import OrderHistory from './pages/OrderHistory';
+import Dashboard from './pages/admin/Dashboard';
+import Products from './pages/admin/Products';
+import { useAuthStore } from './store/authStore';
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuthStore();
+  
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
+};
 
 function App() {
   return (
@@ -27,6 +40,10 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<OrderHistory />} />
+            
+            {/* Routes Admin */}
+            <Route path="/admin" element={<AdminRoute><Dashboard /></AdminRoute>} />
+            <Route path="/admin/products" element={<AdminRoute><Products /></AdminRoute>} />
           </Routes>
         </main>
       </div>
