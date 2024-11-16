@@ -11,31 +11,34 @@ dotenv.config();
 
 const app = express();
 
-// Configuration CORS pour la production
+// Configuration CORS plus permissive pour le développement
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
+  origin: true, // Permet toutes les origines en développement
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
 
-// Routes
+// Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+// Route racine pour vérifier que l'API fonctionne
+app.get('/', (req, res) => {
+  res.json({ message: 'API La Savonnerie de Montmartre' });
 });
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ Connecté à MongoDB Atlas'))
+  .then(() => {
+    console.log('✅ Connecté à MongoDB Atlas');
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+    });
+  })
   .catch(err => console.error('❌ Erreur de connexion MongoDB:', err.message));
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-});

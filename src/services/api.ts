@@ -1,17 +1,45 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api',
-  withCredentials: true
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
+  withCredentials: false,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const message = error.response.data?.error || 'Une erreur est survenue';
+      toast.error(message);
+      
+      if (error.response.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+    } else if (error.request) {
+      toast.error('Impossible de contacter le serveur');
+    } else {
+      toast.error('Une erreur est survenue');
+    }
+    
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 export const auth = {
   register: (data: { name: string; email: string; password: string }) =>

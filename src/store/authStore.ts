@@ -30,11 +30,18 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ loading: true, error: null });
       const { data } = await auth.login({ email, password });
       localStorage.setItem('token', data.token);
-      set({ user: data.user, token: data.token, loading: false });
+      set({ 
+        user: data.user, 
+        token: data.token, 
+        loading: false,
+        error: null 
+      });
     } catch (error: any) {
       set({
-        error: error.response?.data?.error || 'Une erreur est survenue',
+        user: null,
+        token: null,
         loading: false,
+        error: error.response?.data?.error || 'Une erreur est survenue'
       });
       throw error;
     }
@@ -45,11 +52,18 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ loading: true, error: null });
       const { data } = await auth.register({ name, email, password });
       localStorage.setItem('token', data.token);
-      set({ user: data.user, token: data.token, loading: false });
+      set({ 
+        user: data.user, 
+        token: data.token, 
+        loading: false,
+        error: null 
+      });
     } catch (error: any) {
       set({
-        error: error.response?.data?.error || 'Une erreur est survenue',
+        user: null,
+        token: null,
         loading: false,
+        error: error.response?.data?.error || 'Une erreur est survenue'
       });
       throw error;
     }
@@ -57,16 +71,35 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   logout: () => {
     localStorage.removeItem('token');
-    set({ user: null, token: null });
+    set({ 
+      user: null, 
+      token: null,
+      error: null,
+      loading: false 
+    });
   },
 
   checkAuth: async () => {
     try {
+      if (!localStorage.getItem('token')) {
+        set({ user: null, token: null });
+        return;
+      }
+
       const { data } = await auth.me();
-      set({ user: data.user });
+      set({ 
+        user: data.user,
+        error: null,
+        loading: false 
+      });
     } catch (error) {
-      set({ user: null, token: null });
       localStorage.removeItem('token');
+      set({ 
+        user: null, 
+        token: null,
+        error: null,
+        loading: false 
+      });
     }
   },
 }));
